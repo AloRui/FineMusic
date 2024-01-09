@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.FineMusic" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/main</item>
+        <item name="android:windowBackground">@color/background</item>
+
+        <item name="actionBarStyle">@style/my_action_bar</item>
+
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/main</item>
+    </style>
+
+    <style name="my_action_bar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="background">@color/main</item>
+        <item name="titleTextStyle">@style/my_action_bar_title</item>
+    </style>
+
+    <style name="my_action_bar_title" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="my_action_bar_icon" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Theme.FineMusic" parent="Base.Theme.FineMusic" />
+</resources>

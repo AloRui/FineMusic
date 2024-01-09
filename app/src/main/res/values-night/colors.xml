@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main">#061178</color>
+    <color name="background">#0a0a0a</color>
+
+    <color name="danger">#820014</color>
+
+    <color name="fontColor">#ffffff</color>
+</resources>
