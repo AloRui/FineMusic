@@ -1,19 +1,17 @@
-package com.example.finemusic
+package com.example.finemusic.ui
 
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.Switch
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.drawToBitmap
 import androidx.core.widget.addTextChangedListener
+import com.example.finemusic.Common
+import com.example.finemusic.R
 import com.example.finemusic.models.UpdateUserInfo
 import com.example.finemusic.models.UpdateUserPhotoInfo
 import com.example.finemusic.models.UserIdInfo
@@ -29,7 +27,7 @@ import com.example.finemusic.utils.post
 class UserDetailActivity : Base(R.layout.activity_user_detail, "User Detail", true) {
     var isUpdatePhoto: Boolean = false
 
-    val takePhotoLauncher =
+    private val takePhotoLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 val bitmap = it.data!!.extras!!.get("data") as Bitmap
@@ -38,7 +36,7 @@ class UserDetailActivity : Base(R.layout.activity_user_detail, "User Detail", tr
             }
         }
 
-    val selectPhotoFromAlbumLauncher =
+    private val selectPhotoFromAlbumLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 val bitmap = it.data!!.extras!!.get("data") as Bitmap
@@ -130,13 +128,13 @@ class UserDetailActivity : Base(R.layout.activity_user_detail, "User Detail", tr
         }
     }
 
-    private fun onTakePhoto() {
-        takePhotoLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
-    }
+        private fun onTakePhoto() {
+            takePhotoLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+        }
 
-    private fun onSelectPhotoFromAlbum() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        selectPhotoFromAlbumLauncher.launch(intent)
-    }
+        private fun onSelectPhotoFromAlbum() {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            selectPhotoFromAlbumLauncher.launch(intent)
+        }
 }

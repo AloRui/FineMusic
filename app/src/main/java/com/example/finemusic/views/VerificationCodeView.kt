@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Point
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -33,8 +32,10 @@ class VerificationCodeView : ViewGroup {
     private val titlePaint = Paint()
     private val textPaint = Paint()
     private val linePaint = Paint()
-    private val clickHintPaint = Paint()
+    private val clickBackgroundPaint = Paint()
     private val clickTextPaint = Paint()
+
+    //选择位置的键值对存储
     private val clickStepMap = mutableMapOf<Pair<Int, PointF>, Int>()
     private val lsItemPoints = mutableListOf<Pair<Int, PointF>>()
 
@@ -42,6 +43,9 @@ class VerificationCodeView : ViewGroup {
     private val h = 600
     private val random = Random()
 
+    /**
+     * 初始化画笔
+     */
     init {
         titlePaint.color = resources.getColor(R.color.fontColor)
         titlePaint.textSize = 64f
@@ -55,9 +59,10 @@ class VerificationCodeView : ViewGroup {
         linePaint.strokeWidth = 2f
         linePaint.isAntiAlias = true
 
-        clickHintPaint.color = resources.getColor(R.color.danger)
-        clickHintPaint.textSize = 48f
-        clickHintPaint.isAntiAlias = true
+        clickBackgroundPaint.color = resources.getColor(R.color.danger)
+        clickBackgroundPaint.alpha = 110
+        clickBackgroundPaint.textSize = 48f
+        clickBackgroundPaint.isAntiAlias = true
 
         clickTextPaint.color = Color.WHITE
         clickTextPaint.textSize = 48f
@@ -102,7 +107,12 @@ class VerificationCodeView : ViewGroup {
         for (i in 0 until clickStepMap.size) {
             val it = clickStepMap.toList()[i]
 
-            that.drawCircle(it.first.second.x + 15f, it.first.second.y - 20f, 40f, clickHintPaint)
+            that.drawCircle(
+                it.first.second.x + 15f,
+                it.first.second.y - 20f,
+                40f,
+                clickBackgroundPaint
+            )
 
             that.drawText(
                 it.second.toString(),
@@ -139,7 +149,7 @@ class VerificationCodeView : ViewGroup {
                 if (clickStepMap.size == value.length) {
                     val result = clickStepMap.map { a -> a.key.first }.joinToString("") == value
                     if (finishedListener != null) {
-                        finishedListener!!.onVerificationFinished(result)
+                        finishedListener!!.onVerificationFinished(result && value.length == 5)
                     }
                 }
 

@@ -1,10 +1,15 @@
-package com.example.finemusic
+package com.example.finemusic.ui
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
+import android.view.LayoutInflater
 import android.view.View
+import com.example.finemusic.Common
+import com.example.finemusic.R
 import com.example.finemusic.models.LoginInfo
 import com.example.finemusic.models.LoginResultInfo
+import com.example.finemusic.models.MusicListInfo
 import com.example.finemusic.services.UserServices
 import com.example.finemusic.utils.Base
 import com.example.finemusic.utils.get
@@ -20,8 +25,8 @@ class LoginActivity : Base(R.layout.activity_login, "Login") {
     }
 
     override fun loadData() {
-        R.id.etPhone.v("18858202005")
-        R.id.etPassword.v("789590")
+        R.id.etPhone.v("13507660274")
+        R.id.etPassword.v("239159")
     }
 
     override fun bindView() {
@@ -82,7 +87,7 @@ class LoginActivity : Base(R.layout.activity_login, "Login") {
 
     val random = Random()
 
-    fun loadVerificationCode() {
+    private fun loadVerificationCode() {
         val code =
             "${random.nextInt(10)}${random.nextInt(10)}${random.nextInt(10)}${random.nextInt(10)}${
                 random.nextInt(10)

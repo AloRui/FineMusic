@@ -6,4 +6,8 @@
     <color name="danger">#820014</color>
 
     <color name="fontColor">#ffffff</color>
+
+    <color name="bg">#1C1C1C</color>
+
+    <color name="highlight">#244FFF</color>
 </resources>

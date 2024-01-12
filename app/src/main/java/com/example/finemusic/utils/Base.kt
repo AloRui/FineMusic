@@ -1,45 +1,39 @@
 package com.example.finemusic.utils
 
 import android.graphics.BitmapFactory
+import android.icu.text.CaseMap.Title
 import android.os.Bundle
-import android.os.Looper
-import android.service.autofill.FillEventHistory
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.finemusic.LoginActivity
+import androidx.fragment.app.Fragment
+import com.example.finemusic.ui.LoginActivity
 import com.example.finemusic.models.RequestResultInfo
 import com.example.finemusic.storage.Shared.getString
 import com.example.finemusic.storage.Shared.setString
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.orhanobut.logger.Logger
-import kotlinx.coroutines.flow.callbackFlow
 import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.channels.ClosedSelectorException
 import java.util.Scanner
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
-import java.util.logging.Handler
 
 val lsOpenedActivity = mutableListOf<AppCompatActivity>()
 
 fun logout() {
     lsOpenedActivity.map {
-        if (it !is LoginActivity) {
-            it.finish()
-        }
+        if (it !is LoginActivity) it.finish()
     }
 }
 
 abstract class Base(
     private val layoutId: Int,
-    private val title: String = "",
+    private val tl: String = "",
     private val canBack: Boolean = false
 ) : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,14 +41,11 @@ abstract class Base(
 
         setContentView(layoutId)
 
-        if (supportActionBar != null) {
-            val that = supportActionBar!!
-            that.title = title
-            that.setDisplayHomeAsUpEnabled(canBack)
-
-            if (title.isEmpty()) {
-                that.hide()
-            }
+        supportActionBar?.apply {
+            title = tl
+            setDisplayHomeAsUpEnabled(canBack)
+            if (tl.isEmpty())
+                hide()
         }
 
         doInit()
@@ -92,12 +83,57 @@ abstract class Base(
 
     fun Int.isEmpty() = this.v().isEmpty()
 
+    inline fun <reified T : View> Int.ck(crossinline event: (v: View) -> Unit) {
+        this.find<View>().setOnClickListener {
+            event.invoke(it)
+        }
+    }
 }
 
+abstract class BaseFragment(
+    private val layoutId: Int,
+) : Fragment() {
+    lateinit var fragmentView: View
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        fragmentView = LayoutInflater.from(requireContext()).inflate(layoutId, null)
+        return fragmentView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        doInit()
+        loadData()
+        bindView()
+    }
+
+    protected abstract fun doInit()
+    protected abstract fun loadData()
+    protected abstract fun bindView()
+}
+
+fun <T> T.msg(): T {
+    MyApp.toast.apply {
+        setText(this@msg.toString())
+    }.show()
+    return this
+}
+
+fun <T> T.log(): T {
+    Logger.e(this@log.toString())
+    return this
+}
+
+//#region 网络请求
 inline fun <reified T> String.get(crossinline event: (data: RequestResultInfo<T>) -> Unit) {
     MyApp.threadPoolExecutor.execute {
         try {
-            val address = "http://10.0.2.2:5120/api/$this"
+            val address = "http://10.0.2.2:5120/api/${this@get}"
             val http = URL(address).openConnection() as HttpURLConnection
             http.requestMethod = "GET"
             val cookie = "cookie".getString()
@@ -113,27 +149,8 @@ inline fun <reified T> String.get(crossinline event: (data: RequestResultInfo<T>
     }
 }
 
-inline fun <reified T> String.getArray(crossinline event: (data: RequestResultInfo<MutableList<T>>) -> Unit) {
-    MyApp.threadPoolExecutor.execute {
-        try {
-            val address = "http://10.0.2.2:3323/api/$this"
-            val http = URL(address).openConnection() as HttpURLConnection
-            http.requestMethod = "GET"
-            val cookie = "cookie".getString()
-            http.setRequestProperty("Cookie", cookie)
-            val json = Scanner(http.inputStream).useDelimiter("\\A").next()
-            val data = fromJson<MutableList<T>>(json)
-            MyApp.handler.post {
-                event.invoke(data)
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
-}
-
 inline fun <reified T> String.post(
-    params: Any,
+    params: Any? = null,
     crossinline event: (data: RequestResultInfo<T>) -> Unit
 ) {
     MyApp.threadPoolExecutor.execute {
@@ -148,7 +165,8 @@ inline fun <reified T> String.post(
 
             http.setRequestProperty("Content-Type", "Application/JSON")
 
-            http.outputStream.write(Gson().toJson(params).toByteArray())
+            if (params != null)
+                http.outputStream.write(Gson().toJson(params).toByteArray())
             val json = Scanner(http.inputStream).useDelimiter("\\A").next()
             val data = fromJson<T>(json)
 
@@ -157,31 +175,6 @@ inline fun <reified T> String.post(
                 "cookie".setString(cookie?.joinToString(";") ?: "")
             }
 
-            MyApp.handler.post {
-                event.invoke(data)
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
-}
-
-inline fun <reified T> String.postArray(
-    params: Any,
-    crossinline event: (data: RequestResultInfo<MutableList<T>>) -> Unit
-) {
-    MyApp.threadPoolExecutor.execute {
-        try {
-            val address = "http://10.0.2.2:5120/api/$this"
-            val http = URL(address).openConnection() as HttpURLConnection
-            http.requestMethod = "POST"
-            http.doOutput = true
-            http.setRequestProperty("Content-Type", "Application/JSON")
-            val cookie = "cookie".getString()
-            http.setRequestProperty("Cookie", cookie)
-            http.outputStream.write(Gson().toJson(params).toByteArray())
-            val json = Scanner(http.inputStream).useDelimiter("\\A").next()
-            val data = fromJson<MutableList<T>>(json)
             MyApp.handler.post {
                 event.invoke(data)
             }
@@ -209,13 +202,4 @@ fun ImageView.bindImg(fileName: String) {
     }
 }
 
-fun <T> T.msg(): T {
-    Toast.makeText(MyApp.ctx, this@msg.toString(), Toast.LENGTH_SHORT).show()
-    return this
-}
-
-fun <T> T.log(): T {
-    Logger.e(this@log.toString())
-    return this
-}
-
+//#endregion
