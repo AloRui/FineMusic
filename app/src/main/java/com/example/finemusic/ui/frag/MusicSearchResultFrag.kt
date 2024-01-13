@@ -1,5 +1,6 @@
 package com.example.finemusic.ui.frag
 
+import android.app.AlertDialog
 import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
@@ -9,6 +10,7 @@ import com.example.finemusic.music.PlayerService
 import com.example.finemusic.utils.BaseFragment
 import com.example.finemusic.utils.CommonAdapter
 import com.example.finemusic.utils.get
+import com.example.finemusic.views.AddMusicToListDialog
 
 class MusicSearchResultFrag(
     private val searchResultData: MutableList<SearchResultInfo>
@@ -35,6 +37,10 @@ class MusicSearchResultFrag(
                 R.id.ivPlay.find<ImageView>().setOnClickListener {
                     playMusic(item.id)
                 }
+
+                R.id.ivAdd.find<ImageView>().setOnClickListener {
+                    openAddToMusicListDialog(item.id)
+                }
             }
         }
     }
@@ -46,5 +52,20 @@ class MusicSearchResultFrag(
                 playMusic()
             }
         }
+    }
+
+    fun openAddToMusicListDialog(musicId: Int) {
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+
+        val dialog = dialogBuilder.create()
+
+        val dialogView = AddMusicToListDialog(requireContext()).apply {
+            putMusicId(musicId)
+            setDialog(dialog)
+        }.dialogView
+
+        dialog.setView(dialogView)
+
+        dialog.show()
     }
 }

@@ -1,16 +1,26 @@
 package com.example.finemusic.music
 
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import androidx.core.content.FileProvider
 import com.example.finemusic.models.MusicInfo
+import com.example.finemusic.storage.Downloader
+import com.example.finemusic.storage.FileStorage
+import com.example.finemusic.utils.MyApp
 import com.example.finemusic.utils.log
 import com.example.finemusic.utils.msg
+import java.io.File
+import java.io.FileDescriptor
+import java.io.FileInputStream
 
 
 /**
  * 音频播放服务
  */
 class PlayerService {
+
+    private val authorize = MyApp.ctx.applicationContext.packageName + ".fileprovider"
 
     /**
      * 当前播放的歌曲
@@ -61,8 +71,6 @@ class PlayerService {
 
             val percent = (currentPosition * 100 / duration)
 
-            "currentPosition: $currentPosition, duration: $duration".log()
-
             if (onMusicPlayListener != null) onMusicPlayListener!!.onPlayPositionChanged(
                 currentPosition,
                 duration,
@@ -99,12 +107,22 @@ class PlayerService {
      * 加载歌曲地址
      */
     private fun loadMusicPlaySource(): String {
-        //TODO: mock network source
-        val musicInfo = getCurMusicInfo() ?: return ""
-
-        if (onMusicPlayListener != null) onMusicPlayListener!!.onPlaySourceChange(musicInfo.first)
-
-        return "http://10.0.2.2:5120/music/${musicInfo.first.fileSrc}"
+        try {
+            val musicInfo = getCurMusicInfo() ?: return ""
+            if (onMusicPlayListener != null) onMusicPlayListener!!.onPlaySourceChange(musicInfo.first)
+            val fileName = FileStorage.findFileNameFromFileId(musicInfo.first.id)
+            if (fileName.isEmpty()) {
+                Downloader.downloadMusicFile(musicInfo.first.fileSrc) {
+                    FileStorage.saveMusicFileToLocation(musicInfo.first.id, it)
+                }
+                "load network source".log()
+                return "http://10.0.2.2:5120/music/${musicInfo.first.fileSrc}"
+            }
+            return fileName
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            return ""
+        }
     }
 
     /**
@@ -122,6 +140,12 @@ class PlayerService {
     private fun clearPlayStatusListener() {
         handler.removeCallbacksAndMessages(null)
         if (onMusicPlayListener != null) onMusicPlayListener!!.onPlayStatusChanged(false)
+    }
+
+    private fun getFileURIFromFileName(fileName: String): FileDescriptor {
+        val file = File(MyApp.ctx.filesDir, fileName)
+        val fileInputStream = FileInputStream(file)
+        return fileInputStream.fd
     }
 
     /**
@@ -150,7 +174,20 @@ class PlayerService {
                 mediaPlayer.stop()
             }
             mediaPlayer.reset()
-            mediaPlayer.setDataSource(loadMusicPlaySource())
+
+            val musicSource = loadMusicPlaySource()
+            if (musicSource.isEmpty()) {
+                "Get music file failed! Please try again!".msg()
+                return
+            }
+
+            if (musicSource.startsWith("http://"))
+                mediaPlayer.setDataSource(musicSource)
+            else {
+                val fileUri = getFileURIFromFileName(musicSource)
+                mediaPlayer.setDataSource(fileUri)
+            }
+
             mediaPlayer.prepare()
             mediaPlayer.start()
             startPlayStatusListener()

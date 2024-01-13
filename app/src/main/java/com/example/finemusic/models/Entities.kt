@@ -38,7 +38,11 @@ data class MusicListInfo(
     val createTime: String,
     val description: String,
     val musicCount: Int
-)
+) {
+    override fun toString(): String {
+        return name
+    }
+}
 
 data class MusicInfo(
     val id: Int,
@@ -73,4 +77,9 @@ data class NewMusicListInfo(
     val Name: String,
     val Base64: String,
     val Desc: String
+)
+
+data class AddMusicToListInfo(
+    val MusicId: Int,
+    val ListId: Int
 )

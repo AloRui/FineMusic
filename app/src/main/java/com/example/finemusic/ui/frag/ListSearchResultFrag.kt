@@ -49,5 +49,4 @@ class ListSearchResultFrag(
             startActivity(Intent(requireContext(), MusicListDetailActivity::class.java))
         }
     }
-
 }

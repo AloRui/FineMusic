@@ -21,6 +21,7 @@ import com.example.finemusic.Common
 import com.example.finemusic.R
 import com.example.finemusic.models.MusicListInfo
 import com.example.finemusic.models.NewMusicListInfo
+import com.example.finemusic.storage.Shared.clear
 import com.example.finemusic.utils.Base
 import com.example.finemusic.utils.CommonAdapter
 import com.example.finemusic.utils.bindImg
