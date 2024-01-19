@@ -13,6 +13,20 @@ object Shared {
         return value ?: defaultValue
     }
 
+    fun String.getInt(
+        defaultValue: Int
+    ): Int {
+        val shared = MyApp.ctx.getSharedPreferences("finemusic", Context.MODE_PRIVATE)
+        val value = shared.getInt(this, defaultValue)
+        return value
+    }
+
+    fun String.setInt(value: Int) {
+        val edit = MyApp.ctx.getSharedPreferences("finemusic", Context.MODE_PRIVATE).edit()
+        edit.putInt(this, value)
+        edit.apply()
+    }
+
     fun String.setString(value: String) {
         val edit = MyApp.ctx.getSharedPreferences("finemusic", Context.MODE_PRIVATE).edit()
         edit.putString(this, value)

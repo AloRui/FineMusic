@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import com.example.finemusic.R
 import com.example.finemusic.models.SearchResultInfo
-import com.example.finemusic.music.PlayerService
+import com.example.finemusic.music.MusicManager
 import com.example.finemusic.utils.BaseFragment
 import com.example.finemusic.utils.CommonAdapter
 import com.example.finemusic.utils.get
@@ -47,10 +47,8 @@ class MusicSearchResultFrag(
 
     fun playMusic(musicId: Int) {
         "music/info/byid/$musicId".get {
-            PlayerService.getInstance().apply {
-                setPlayList(mutableListOf(Pair(it.data, 0)))
-                playMusic()
-            }
+            MusicManager.insertMusic2List(it.data, 0)
+            MusicManager.playMusic(it.data)
         }
     }
 

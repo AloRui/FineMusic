@@ -7,7 +7,7 @@ import com.example.finemusic.R
 import com.example.finemusic.models.MusicInfo
 import com.example.finemusic.models.MusicListInfo
 import com.example.finemusic.models.MusicListInfoByIdInfo
-import com.example.finemusic.music.PlayerService
+import com.example.finemusic.music.MusicManager
 import com.example.finemusic.utils.Base
 import com.example.finemusic.utils.CommonAdapter
 import com.example.finemusic.utils.get
@@ -47,10 +47,8 @@ class MusicListDetailActivity :
     }
 
     private fun addMusicToPlayList() {
-        PlayerService.getInstance().apply {
-            setPlayList(lsMusicList.map { a -> Pair(a, 0) }.toMutableList())
-            this.playMusic()
-        }
+        MusicManager.replaceMusicList(lsMusicList)
+        MusicManager.playMusic(lsMusicList.first())
     }
 
     private fun loadMusicList() {
@@ -67,6 +65,11 @@ class MusicListDetailActivity :
             override fun initView(item: MusicInfo, itemView: View, pos: Int) {
                 R.id.tvMusicName.v("${(pos + 1)}. ${item.name}")
                 R.id.tvSingerName.v(item.singerName)
+
+                itemView.setOnClickListener {
+                    MusicManager.insertMusic2List(item, 0)
+                    MusicManager.playMusic(item)
+                }
             }
         }
     }

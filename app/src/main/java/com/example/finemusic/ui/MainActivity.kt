@@ -1,9 +1,15 @@
 package com.example.finemusic.ui
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.Menu
@@ -14,29 +20,37 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.PopupMenu
+import android.widget.RemoteViews
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.drawToBitmap
 import com.example.finemusic.Common
 import com.example.finemusic.R
 import com.example.finemusic.models.MusicListInfo
 import com.example.finemusic.models.NewMusicListInfo
-import com.example.finemusic.storage.Shared.clear
+import com.example.finemusic.music.MusicManager
 import com.example.finemusic.utils.Base
 import com.example.finemusic.utils.CommonAdapter
 import com.example.finemusic.utils.bindImg
 import com.example.finemusic.utils.bitmap2Base64
 import com.example.finemusic.utils.get
+import com.example.finemusic.utils.log
 import com.example.finemusic.utils.msg
 import com.example.finemusic.utils.post
 
+
 class MainActivity : Base(R.layout.activity_main, "FineMusic") {
+
     override fun doInit() {
     }
 
     override fun loadData() {
         loadOwnerList()
         loadFollowedList()
+
+        MusicManager.serviceHealthCheck().log()
     }
 
     override fun bindView() {
@@ -181,8 +195,8 @@ class MainActivity : Base(R.layout.activity_main, "FineMusic") {
         }
 
         var cover: Bitmap? = null
-        if (ivCover?.visibility == View.VISIBLE)
-            cover = ivCover?.drawToBitmap(Bitmap.Config.ARGB_8888)
+        if (ivCover?.visibility == View.VISIBLE) cover =
+            ivCover?.drawToBitmap(Bitmap.Config.ARGB_8888)
 
         val base64 = cover?.bitmap2Base64() ?: ""
 
@@ -222,5 +236,4 @@ class MainActivity : Base(R.layout.activity_main, "FineMusic") {
         intent.type = "image/*"
         selectPhotoFromAlbumLauncher.launch(intent)
     }
-
 }

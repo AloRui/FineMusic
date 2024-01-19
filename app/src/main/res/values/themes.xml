@@ -12,6 +12,7 @@
 
     <style name="my_action_bar" parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/main</item>
+        <item name="android:gravity">center</item>
         <item name="titleTextStyle">@style/my_action_bar_title</item>
     </style>
 

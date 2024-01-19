@@ -12,7 +12,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import com.example.finemusic.R
 import com.example.finemusic.models.MusicInfo
-import com.example.finemusic.music.PlayerService
+import com.example.finemusic.music.MusicManager
+import com.example.finemusic.utils.msg
 
 
 class PlayControlView : LinearLayout {
@@ -84,14 +85,16 @@ class PlayControlView : LinearLayout {
         }
 
         bindCallbackEvent()
+
+        this.visibility = View.GONE
     }
 
     /**
      * 绑定当前view的回调事件
      */
     private fun bindCallbackEvent() {
-        PlayerService.getInstance().apply {
-            setOnMusicPlayListener(object : PlayerService.OnMusicPlayListener {
+        MusicManager.apply {
+            setOnMusicPlayListener(object : MusicManager.OnMusicPlayListener {
                 override fun onPlayPositionChanged(
                     curPosition: Int,
                     duration: Int,
@@ -105,6 +108,7 @@ class PlayControlView : LinearLayout {
                 }
 
                 override fun onPlaySourceChange(musicInfo: MusicInfo) {
+                    visibility = View.VISIBLE
                     bindMusicInfo(musicInfo)
                 }
             })
@@ -113,11 +117,17 @@ class PlayControlView : LinearLayout {
 
     private fun putMediaPlayerPosition() {
         val value = seekBar.progress
-        PlayerService.getInstance().setMusicProgress(value)
+        MusicManager.seekTo(value)
     }
 
     private fun switchPlayStatus() {
-        PlayerService.getInstance().switchPlayStatus()
+        if (MusicManager.isPlaying())
+            MusicManager.pausePlay()
+        else {
+            MusicManager.getCurrentMusic()?.apply {
+                MusicManager.playMusic(this)
+            } ?: "Sorry please select a music first!".msg()
+        }
     }
 
     /**
@@ -158,6 +168,6 @@ class PlayControlView : LinearLayout {
     }
 
     private fun playNextMusic() {
-        PlayerService.getInstance().nextMusic()
+        MusicManager.nextMusic()
     }
 }
