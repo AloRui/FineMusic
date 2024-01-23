@@ -83,3 +83,25 @@ data class AddMusicToListInfo(
     val MusicId: Int,
     val ListId: Int
 )
+
+data class CollectionInfo(
+    val id: String,
+    val name: String,
+    val singerName: String,
+    val musicList: MutableList<MusicInfo>
+)
+
+data class SingerDetailInfo(
+    val id: Int,
+    val name: String,
+    val birthday: String,
+    val descriotion: String,
+    val top10MusicList: MutableList<MusicInfo>,
+    val myCollectionList: MutableList<CollectionInfo>
+)
+
+data class MusicLrcListInfo(
+    val musicTime: String,
+    val time: Float,
+    val title: String
+)

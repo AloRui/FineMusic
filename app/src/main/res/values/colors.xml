@@ -10,4 +10,6 @@
     <color name="bg">#F3F3F3</color>
 
     <color name="highlight">#244FFF</color>
+
+    <color name="bg_full">#FFFFFF</color>
 </resources>

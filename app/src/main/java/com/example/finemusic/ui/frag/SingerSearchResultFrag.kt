@@ -1,9 +1,11 @@
 package com.example.finemusic.ui.frag
 
+import android.content.Intent
 import android.view.View
 import android.widget.ListView
 import com.example.finemusic.R
 import com.example.finemusic.models.SearchResultInfo
+import com.example.finemusic.ui.SingerDetailActivity
 import com.example.finemusic.utils.BaseFragment
 import com.example.finemusic.utils.CommonAdapter
 
@@ -28,6 +30,11 @@ class SingerSearchResultFrag(
         ) {
             override fun initView(item: SearchResultInfo, itemView: View, pos: Int) {
                 R.id.tvSingerName.v(item.name)
+
+                itemView.setOnClickListener {
+                    SingerDetailActivity.singerId = item.id
+                    activity?.startActivity(Intent(activity, SingerDetailActivity::class.java))
+                }
             }
         }
     }

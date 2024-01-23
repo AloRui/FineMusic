@@ -42,6 +42,12 @@ abstract class CommonAdapter<T>(
 
     fun Int.v() = this.find<TextView>().text.toString().trim()
 
+    inline fun <reified T : View> Int.ck(crossinline event: (view: T) -> Unit) {
+        this.find<T>().setOnClickListener {
+            event.invoke(it as T)
+        }
+    }
+
     fun Int.v(data: Any?) {
         this.find<TextView>().text = data?.toString() ?: ""
     }

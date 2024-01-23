@@ -57,7 +57,7 @@ class FineMusicService : Service() {
             MusicManager.pausePlay()
         } else {
             MusicManager.getCurrentMusic()?.apply {
-                MusicManager.playMusic(this)
+                MusicManager.playMusic(this@apply)
             }
         }
     }

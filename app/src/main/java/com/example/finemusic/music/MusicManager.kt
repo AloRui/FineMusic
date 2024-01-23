@@ -262,7 +262,7 @@ object MusicManager {
      */
     private fun startPlayMusic(musicInfo: MusicInfo?) {
         try {
-            if (currentMusic != musicInfo || (currentMusic == musicInfo && player.getCurrentPlayDuration() >= player.getCurrentPlayPosition())) {
+            if (currentMusic == null || currentMusic?.id != musicInfo?.id || (currentMusic!!.id == musicInfo!!.id && player.getCurrentPlayPosition() >= player.getCurrentPlayDuration())) {
                 listenerList.map {
                     it.onPlaySourceChange(musicInfo!!)
                 }
@@ -272,9 +272,9 @@ object MusicManager {
                 val source = getMusicSource(currentMusic!!)
                 source?.apply {
                     if (first == SOURCE_TYPE_NET) {
-                        player.setNetworkSource(source.second as String)
+                        player.setNetworkSource(source.second.log() as String)
                     } else {
-                        player.setLocalSource(source.second as FileDescriptor)
+                        player.setLocalSource(source.second.log() as FileDescriptor)
                     }
                 }
             }

@@ -28,22 +28,27 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.drawToBitmap
 import com.example.finemusic.Common
 import com.example.finemusic.R
+import com.example.finemusic.models.MusicInfo
 import com.example.finemusic.models.MusicListInfo
 import com.example.finemusic.models.NewMusicListInfo
 import com.example.finemusic.music.MusicManager
+import com.example.finemusic.storage.Shared.clear
 import com.example.finemusic.utils.Base
 import com.example.finemusic.utils.CommonAdapter
+import com.example.finemusic.utils.MyApp
 import com.example.finemusic.utils.bindImg
 import com.example.finemusic.utils.bitmap2Base64
 import com.example.finemusic.utils.get
 import com.example.finemusic.utils.log
 import com.example.finemusic.utils.msg
 import com.example.finemusic.utils.post
+import com.example.finemusic.views.PlayControlView
 
 
 class MainActivity : Base(R.layout.activity_main, "FineMusic") {
 
     override fun doInit() {
+        "filemap".clear()
     }
 
     override fun loadData() {
@@ -64,6 +69,21 @@ class MainActivity : Base(R.layout.activity_main, "FineMusic") {
     }
 
     override fun bindEvent() {
+        val musicControlView = this.findViewById<PlayControlView>(R.id.playControlView)
+
+        musicControlView.ivMusicCover.setOnClickListener {
+            viewPlayingMusic()
+        }
+    }
+
+    private fun viewPlayingMusic() {
+        val currentMusicInfo = MusicManager.getCurrentMusic()
+        if (currentMusicInfo != null) {
+            LrcActivity.musicInfo = currentMusicInfo
+            startActivity(Intent(this, LrcActivity::class.java))
+        } else {
+            "Sorry please select a music first!".msg()
+        }
     }
 
     fun onJumpToUserDetail(view: View) {
@@ -75,7 +95,6 @@ class MainActivity : Base(R.layout.activity_main, "FineMusic") {
         return true
     }
 
-
     private fun loadOwnerList() {
         "musiclist/list/owner".get {
             R.id.lvOwnerList.find<ListView>().adapter = object : CommonAdapter<MusicListInfo>(
@@ -84,7 +103,7 @@ class MainActivity : Base(R.layout.activity_main, "FineMusic") {
                 override fun initView(item: MusicListInfo, itemView: View, pos: Int) {
                     R.id.tvListName.v(item.name)
                     R.id.tvCount.v("Music count: ${item.musicCount}")
-                    R.id.tvCreator.v("Createor : ${item.creator}")
+                    R.id.tvCreator.v("Creator : ${item.creator}")
 
                     itemView.setOnClickListener {
                         jumpToMusicListDetail(item)

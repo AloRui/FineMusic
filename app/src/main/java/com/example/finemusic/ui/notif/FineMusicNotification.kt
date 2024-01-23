@@ -61,6 +61,7 @@ class FineMusicNotification(private val ctx: Context) {
             .setSmallIcon(R.drawable.logo)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setContentTitle("Fine Music")
+            .setOngoing(true)
             .setContent(remoteViews)
     }
 

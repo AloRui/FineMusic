@@ -1,5 +1,6 @@
 package com.example.finemusic.ui
 
+import android.app.AlertDialog
 import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
@@ -13,6 +14,7 @@ import com.example.finemusic.utils.CommonAdapter
 import com.example.finemusic.utils.get
 import com.example.finemusic.utils.msg
 import com.example.finemusic.utils.post
+import com.example.finemusic.views.AddMusicToListDialog
 
 class MusicListDetailActivity :
     Base(R.layout.activity_music_list_detail, musicListInfo.name, false) {
@@ -70,6 +72,10 @@ class MusicListDetailActivity :
                     MusicManager.insertMusic2List(item, 0)
                     MusicManager.playMusic(item)
                 }
+
+                R.id.ivAdd.ck<ImageView> {
+                    openAddToMusicListDialog(item.id)
+                }
             }
         }
     }
@@ -94,5 +100,20 @@ class MusicListDetailActivity :
                 ivFollowed.setImageResource(R.drawable.baseline_star_24)
             }
         }
+    }
+
+    fun openAddToMusicListDialog(musicId: Int) {
+        val dialogBuilder = AlertDialog.Builder(this)
+
+        val dialog = dialogBuilder.create()
+
+        val dialogView = AddMusicToListDialog(this).apply {
+            putMusicId(musicId)
+            setDialog(dialog)
+        }.dialogView
+
+        dialog.setView(dialogView)
+
+        dialog.show()
     }
 }

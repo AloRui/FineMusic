@@ -9,6 +9,7 @@
     android:padding="8dp">
 
     <ImageView
+        android:id="@+id/ivMusicCover"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center"

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/lv_item_bg"
+    android:elevation="4dp"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/lv_bg"
+            android:elevation="4dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:src="@drawable/baseline_skip_previous_24" />
+
+        <ImageView
+            android:id="@+id/ivPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/lv_bg"
+            android:elevation="4dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:src="@drawable/baseline_play_arrow_24" />
+
+        <ImageView
+            android:id="@+id/ivNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/lv_bg"
+            android:elevation="4dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:src="@drawable/baseline_skip_next_24" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
