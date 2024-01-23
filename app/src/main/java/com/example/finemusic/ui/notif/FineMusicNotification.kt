@@ -14,7 +14,7 @@ import com.example.finemusic.music.MusicManager
 import com.example.finemusic.utils.MyApp
 
 /**
- * FineMusic的通知栏
+ * FineMusic的通知栏 使用Notification 实现
  */
 class FineMusicNotification(private val ctx: Context) {
 
@@ -61,6 +61,7 @@ class FineMusicNotification(private val ctx: Context) {
             .setSmallIcon(R.drawable.logo)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setContentTitle("Fine Music")
+            //通过设置ongoing 可以让 api 30 的设备不被关闭 RemoteView
             .setOngoing(true)
             .setContent(remoteViews)
     }

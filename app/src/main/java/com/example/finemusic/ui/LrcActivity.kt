@@ -15,8 +15,7 @@ import com.example.finemusic.utils.log
 import com.example.finemusic.utils.msg
 
 class LrcActivity : Base(
-    R.layout.activity_lrc,
-    musicInfo.name
+    R.layout.activity_lrc, musicInfo.name
 ) {
 
     private var myAdapter: CommonAdapter<MusicLrcListInfo>? = null
@@ -30,6 +29,9 @@ class LrcActivity : Base(
     }
 
     override fun doInit() {
+        R.id.lvLrc.find<ListView>().apply {
+            scrollBarSize = 0
+        }
     }
 
     override fun loadData() {
@@ -85,17 +87,14 @@ class LrcActivity : Base(
             lsData.clear()
             lsData.addAll(it.data.filter { a -> a.title.isNotEmpty() }.toMutableList())
 
-            if (myAdapter == null)
-                initAdapter()
+            if (myAdapter == null) initAdapter()
             myAdapter?.notifyDataSetChanged()
         }
     }
 
     private fun initAdapter() {
         this.myAdapter = object : CommonAdapter<MusicLrcListInfo>(
-            lsData,
-            android.R.layout.simple_spinner_dropdown_item,
-            this
+            lsData, android.R.layout.simple_spinner_dropdown_item, this
         ) {
             override fun initView(item: MusicLrcListInfo, itemView: View, pos: Int) {
                 (itemView as TextView).apply {
@@ -116,8 +115,11 @@ class LrcActivity : Base(
         R.id.lvLrc.find<ListView>().adapter = myAdapter
     }
 
+    /**
+     * listview auto scroll to current position
+     */
     private fun autoScroll(pos: Int) {
         val listView = R.id.lvLrc.find<ListView>()
-        listView.smoothScrollToPositionFromTop(pos, 10, 200)
+        listView.smoothScrollToPositionFromTop(pos, 10, 60)
     }
 }
